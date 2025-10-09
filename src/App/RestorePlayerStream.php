@@ -106,7 +106,9 @@ class RestorePlayerStream extends ClientApp {
               'id' => $group->id,
               'stream_id' => $stream
             ])->then(function($result) use($id) {
+              $name = $this->_players[$id]['name'];
               $this->_players[$id]['stream'] = $result->stream_id;
+              $this->_fileWrite($this->_fnStat($id, $name), $result->stream_id);
             })->catch(function($e) {
               Log::error('Group.SetStream: ('.$e->getCode().') '.$e->getMessage());
             });
