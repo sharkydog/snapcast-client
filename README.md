@@ -6,7 +6,7 @@ Commands and responses are linked using [ReactPHP promises](https://github.com/r
 
 The client class has an automatic reconnect feature which can be adjusted or stopped during runtime.
 
-## TL;DR
+## Usage
 
 ```php
 use SharkyDog\Snapcast;
@@ -39,7 +39,7 @@ $snapc->connect();
 
 By default client will connect with 2 seconds timeout and try to reconnect after 5 seconds if connect failed, connection was dropped or closed by the remote side. This can be changed.
 
-## SharkyDog\Snapcast\Client reference
+### SharkyDog\Snapcast\Client reference
 ```php
 // wait to reconnect in seconds, 0 to disable reconnects
 public function reconnectInterval(?int $reconn=null): int;
@@ -65,5 +65,25 @@ public function call(string $method, ?\stdClass $params=null, string $id='', int
 - `open` - connection established
 - `close` [`bool $remote`] - connection closed, `$remote = true` when closed by remote side or dropped
 - `notify` [`string $method`, `\stdClass $params`] - notification
+
 Notifications will also be emitted with method as event and params as single parameter, like: `Stream.OnUpdate` [`\stdClass $params`]
+
+## Helpers
+There is an abstract class (`SharkyDog\Snapcast\ClientApp`) that helps create additional and more specific logic by binding events to class methods.
+
+### Restore player stream
+`SharkyDog\Snapcast\App\RestorePlayerStream` is one such class.
+It will monitor the snapcast server for players being added to or removed from groups and will remember the set stream when a player is alone in a group.
+Then, when the player is removed from a group and is placed alone in a new group, the stream will be restored to the remembered one or to a configured default per player.
+```php
+use SharkyDog\Snapcast;
+$snapc = new Snapcast\Client('192.168.0.123', 1705);
+$plapp = new Snapcast\App\RestorePlayerStream(__DIR__.'/data');
+$plapp->client($snapc);
+$snapc->connect();
+```
+Data directory provided in the constructor is where player state is saved and where config is read from.
+After client has been set and it connects, `RestorePlayerStream` will start monitoring the server for stream changes and will save the last used stream for every player when it is alone in a group, but will not do anything else until some configuration is done in the data directory.
+
+
 ## TBC
