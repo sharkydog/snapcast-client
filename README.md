@@ -41,7 +41,7 @@ By default client will connect with 2 seconds timeout and try to reconnect after
 
 ## SharkyDog\Snapcast\Client reference
 ```php
-// wait to reconnect in seconds
+// wait to reconnect in seconds, 0 to disable reconnects
 public function reconnectInterval(?int $reconn=null): int;
 // connect, last non-null timeout is remembered, seconds
 public function connect(?int $timeout=null);
@@ -57,4 +57,13 @@ public function disconnect(bool $force=false);
 public function call(string $method, ?\stdClass $params=null, string $id='', int $timeout=10): Promise\PromiseInterface;
 ```
 
+### Events
+`event` [`parameter1`, `parameter2`, ...]
+- `connect` - connect attempt is being made
+- `reconnect` - connect attempt will be made after reconnect interval
+- `error-connect` [`\Throwable $error`] - connect error
+- `open` - connection established
+- `close` [`bool $remote`] - connection closed, `$remote = true` when closed by remote side or dropped
+- `notify` [`string $method`, `\stdClass $params`] - notification
+Notifications will also be emitted with method as event and params as single parameter, like: `Stream.OnUpdate` [`\stdClass $params`]
 ## TBC
