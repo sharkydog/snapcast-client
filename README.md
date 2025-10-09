@@ -85,5 +85,21 @@ $snapc->connect();
 Data directory provided in the constructor is where player state is saved and where config is read from.
 After client has been set and it connects, `RestorePlayerStream` will start monitoring the server for stream changes and will save the last used stream for every player when it is alone in a group, but will not do anything else until some configuration is done in the data directory.
 
+For every player there will be a file like `stat_name_id`, ex.: `stat_Snapclient_on_Server_aa_bb_cc_dd_ee_ff`. Filename is formed from player name and id after non alphanumeric characters are replaced with underscore. If player name is not set, used name for the stat filename will be `noname`. Content of this file is the last saved stream id.
 
-## TBC
+In the same directory, a config file will be read when the player is removed from a group. These files must be created and managed by you, `RestorePlayerStream` will not write or delete them.
+
+The config file is per player and can be named `conf_name_id` or `conf_id` or `conf_name`. `RestorePlayerStream` will look for them in that order.
+- If a file is not present, nothing will be done.
+- If content of the file is empty, player stream will be restored to the one in the stat file.
+- If the file is not empty, its content will be used as the stream to restore.
+
+If you want the player to be restored to the last used stream:
+```bash
+touch conf_name_id
+```
+
+If you want to set the current saved stream as default:
+```bash
+cat stat_name_id > conf_name_id
+```
