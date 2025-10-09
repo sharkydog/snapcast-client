@@ -1,0 +1,23 @@
+{
+  "name": "sharkydog/snapcast-client",
+  "description": "Snapcast JSON-RPC api wrapper in PHP",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Aleksandar Dimitrov",
+      "email": "admin@sharkydog.info"
+    }
+  ],
+  "require": {
+    "php": ">=7.4",
+    "react/socket": "^1.16"
+  },
+  "suggest": {
+    "sharkydog/logger": "Display messages other than errors and warnings"
+  },
+  "autoload": {
+    "psr-4": {
+      "SharkyDog\\Snapcast\\": "src/"
+    }
+  }
+}

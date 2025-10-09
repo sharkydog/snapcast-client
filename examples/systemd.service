@@ -1,0 +1,22 @@
+[Unit]
+Description=PHP Snapcast client
+After=network-online.target
+
+# use if running snapserver on the same machine
+#BindsTo=snapserver.service
+#After=snapserver.service
+
+[Service]
+Type=exec
+
+# if using RestorePlayerStream app,
+# user needs to write to data dir
+User=nobody
+Group=nobody
+
+ExecStart=php /path/to/your/snapcast-client.php
+Restart=on-failure
+
+[Install]
+WantedBy=network-online.target
+#WantedBy=snapserver.service
