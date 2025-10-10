@@ -89,7 +89,8 @@ For every player there will be a file like `stat_name_id`, ex.: `stat_Snapclient
 
 In the same directory, a config file will be read when the player is removed from a group. These files must be created and managed by you, `RestorePlayerStream` will not write or delete them.
 
-The config file is per player and can be named `conf_name_id` or `conf_id` or `conf_name`. `RestorePlayerStream` will look for them in that order.
+The config file is per player and can be named `conf_name_id` or `conf_id` or `conf_name` or `conf_default`. `RestorePlayerStream` will look for them in that order.
+The file `conf_default` would be picked last for any player, but obviously can also be picked by a player with name or id "default".
 - If a file is not present, nothing will be done.
 - If content of the file is empty, player stream will be restored to the one in the stat file.
 - If the file is not empty, its content will be used as the stream to restore.
