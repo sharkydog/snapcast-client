@@ -35,6 +35,9 @@ class RestorePlayerStream extends ClientApp {
     if($name && is_file($file = $this->_datadir.'conf_'.$name)) {
       return $file;
     }
+    if(is_file($file = $this->_datadir.'conf_default')) {
+      return $file;
+    }
 
     return null;
   }
