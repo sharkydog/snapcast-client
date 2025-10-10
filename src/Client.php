@@ -4,6 +4,7 @@ use React\EventLoop\Loop;
 use React\Promise;
 
 class Client extends TCPClient {
+  private $_buffer = '';
   private $_msg_id = 0;
   private $_msg_sent = [];
 
@@ -32,26 +33,27 @@ class Client extends TCPClient {
   }
 
   protected function onData(string $data, ?\stdClass $json=null) {
-    if(!$json && strpos($data,"\n")!==false) {
-      foreach(preg_split('/\r?\n/',$data) as $data) {
-        $this->onData($data);
-      }
-      return;
-    }
-
-    if(!$json && !($jsonArr = json_decode($data))) {
-      return;
-    }
-
     if(!$json) {
-      if(is_array($jsonArr)) {
+      $this->_buffer .= $data;
+
+      if(!preg_match('/^(.+?)\r?\n/', $this->_buffer, $m)) {
+        return;
+      }
+
+      if($jsonArr = json_decode($m[1])) {
+        if(!is_array($jsonArr)) {
+          $jsonArr = [$jsonArr];
+        }
         foreach($jsonArr as $json) {
           $this->onData('', $json);
         }
-        return;
-      } else {
-        $json = $jsonArr;
       }
+
+      if($this->_buffer = substr($this->_buffer, strlen($m[0]))) {
+        $this->onData('');
+      }
+
+      return;
     }
 
     if(($id = $json->id??null) === null) {
