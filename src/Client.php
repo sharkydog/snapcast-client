@@ -32,6 +32,13 @@ class Client extends TCPClient {
   }
 
   protected function onData(string $data, ?\stdClass $json=null) {
+    if(!$json && strpos($data,"\n")!==false) {
+      foreach(preg_split('/\r?\n/',$data) as $data) {
+        $this->onData($data);
+      }
+      return;
+    }
+
     if(!$json && !($jsonArr = json_decode($data))) {
       return;
     }
