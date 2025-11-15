@@ -28,7 +28,7 @@ class EventEmitterProxy extends EventEmitter {
   }
 
   private function _clearListener($event) {
-    if($this->hasListeners($event)) {
+    if($this->hasListeners($event) || !isset($this->_listeners[$event])) {
       return;
     }
     if($this->_emitter) {
